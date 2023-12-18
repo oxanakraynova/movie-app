@@ -1,9 +1,9 @@
 import React from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createHashRouter, RouterProvider } from "react-router-dom";
 import MovieDetails from "./Movies/MovieDetails";
 import MovieList from "./Movies/MovieList";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/film/:movieId",
     element: <MovieDetails />,

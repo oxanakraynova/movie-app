@@ -10,7 +10,7 @@ interface CustomRowProps {
   value: string;
 }
 
-interface MovieDetails {
+interface Details {
   Rated: string;
   Released: string;
   Country: string;
@@ -21,13 +21,27 @@ interface MovieDetails {
   Poster: string;
 }
 
+export const API_KEY = "33a57862";
+export const API_BASE_URL = "https://www.omdbapi.com";
+
+const CustomRow: React.FC<CustomRowProps> = ({ label, value }) => (
+  <Grid container spacing={2}>
+    <Grid item xs={1.5}>
+      <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+        {label}:
+      </Typography>
+    </Grid>
+
+    <Grid item xs={10.5}>
+      <Typography variant="body1">{value}</Typography>
+    </Grid>
+  </Grid>
+);
+
 function MovieDetails() {
   const { movieId } = useParams<{ movieId: string }>();
-  const [movieDetails, setMovieDetails] = useState<MovieDetails | null>(null);
+  const [details, setDetails] = useState<Details | null>(null);
   const [loading, setLoading] = useState(false);
-
-  const API_KEY = "33a57862";
-  const API_BASE_URL = "http://www.omdbapi.com";
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
@@ -36,7 +50,7 @@ function MovieDetails() {
         const response = await axios.get(
           `${API_BASE_URL}/?i=${movieId}&apikey=${API_KEY}`
         );
-        setMovieDetails(response.data);
+        setDetails(response.data);
       } catch (error) {
         console.error("Error fetching movie details from API", error);
       } finally {
@@ -47,27 +61,13 @@ function MovieDetails() {
     fetchMovieDetails();
   }, [movieId]);
 
-  const CustomRow: React.FC<CustomRowProps> = ({ label, value }) => (
-    <Grid container spacing={2}>
-      <Grid item xs={1.5}>
-        <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
-          {label}:
-        </Typography>
-      </Grid>
-
-      <Grid item xs={10.5}>
-        <Typography variant="body1">{value}</Typography>
-      </Grid>
-    </Grid>
-  );
-
   return (
     <>
       <Layout>
         {loading ? (
           <Loading />
         ) : (
-          movieDetails && (
+          details && (
             <Grid container display="flex" alignItems="flex-start" spacing={3}>
               <Grid item xs={12} sm={6} md={4} lg={3}>
                 <CardMedia
@@ -76,20 +76,20 @@ function MovieDetails() {
                     height: 400,
                     objectFit: "contain",
                   }}
-                  image={movieDetails!.Poster}
-                  alt={movieDetails!.Title}
+                  image={details!.Poster}
+                  alt={details!.Title}
                 />
               </Grid>
               <Grid item xs={12} sm={6} md={8} lg={9}>
                 <Typography variant="h4" gutterBottom>
-                  {movieDetails!.Title}
+                  {details!.Title}
                 </Typography>
-                <CustomRow label="Rated" value={movieDetails!.Rated} />
-                <CustomRow label="Released" value={movieDetails!.Released} />
-                <CustomRow label="Country" value={movieDetails!.Country} />
-                <CustomRow label="Director" value={movieDetails!.Director} />
-                <CustomRow label="Actors" value={movieDetails!.Actors} />
-                <CustomRow label="About" value={movieDetails!.Plot} />
+                <CustomRow label="Rated" value={details!.Rated} />
+                <CustomRow label="Released" value={details!.Released} />
+                <CustomRow label="Country" value={details!.Country} />
+                <CustomRow label="Director" value={details!.Director} />
+                <CustomRow label="Actors" value={details!.Actors} />
+                <CustomRow label="About" value={details!.Plot} />
               </Grid>
             </Grid>
           )

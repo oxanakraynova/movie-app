@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import Layout from "../Layout/Layout";
 import Loading from "../UI/Loading";
+import { API_BASE_URL, API_KEY } from "./MovieDetails";
 
 export interface Movie {
   imdbID: string;
@@ -23,9 +24,6 @@ const MovieList: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-
-  const API_KEY = "33a57862";
-  const API_BASE_URL = "http://www.omdbapi.com";
 
   useEffect(() => {
     const fetchMovies = async () => {
