@@ -1,15 +1,11 @@
-import React from "react";
-import { Card, CardContent, CardMedia, Typography } from "@mui/material";
+import React, { Fragment } from "react";
+import { CardContent, CardMedia, Typography } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import { Movie } from "./MovieList";
 
 const MovieCard: React.FC<Movie> = ({ Poster, Title, imdbID, Year }) => {
   return (
-    <Card
-      sx={{
-        width: "15rem",
-      }}
-    >
+    <Fragment>
       <CardMedia
         component="img"
         sx={{
@@ -26,15 +22,15 @@ const MovieCard: React.FC<Movie> = ({ Poster, Title, imdbID, Year }) => {
           color="inherit"
           style={{ textDecoration: "none" }}
         >
-          <Typography variant="body1" noWrap>
+          <Typography variant="body1" gutterBottom>
             {Title}
           </Typography>
         </NavLink>
-        <Typography variant="body2" sx={{ pt: 1 }}>
+        <Typography variant="body2" gutterBottom>
           {Year}
         </Typography>
       </CardContent>
-    </Card>
+    </Fragment>
   );
 };
 

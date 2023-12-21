@@ -1,8 +1,8 @@
-import { Card, CardMedia, Grid, Typography } from "@mui/material";
+import { CardMedia, Container, Grid, Typography } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Layout from "../Layout/Layout";
+import Navbar from "../Navbar/Navbar";
 import Loading from "../UI/Loading";
 
 interface CustomRowProps {
@@ -63,12 +63,13 @@ function MovieDetails() {
 
   return (
     <>
-      <Layout>
-        {loading ? (
-          <Loading />
-        ) : (
-          details && (
-            <Card>
+      {loading ? (
+        <Loading />
+      ) : (
+        details && (
+          <>
+            <Navbar />
+            <Container maxWidth="lg" style={{ marginTop: 2 }}>
               <Grid
                 container
                 display="flex"
@@ -98,10 +99,10 @@ function MovieDetails() {
                   <CustomRow label="About" value={details!.Plot} />
                 </Grid>
               </Grid>
-            </Card>
-          )
-        )}
-      </Layout>
+            </Container>
+          </>
+        )
+      )}
     </>
   );
 }

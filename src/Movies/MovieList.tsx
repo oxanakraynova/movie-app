@@ -1,7 +1,7 @@
-import { Grid, Pagination } from "@mui/material";
+import { Container, Grid, Pagination } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import Layout from "../Layout/Layout";
+import NavbarWithSearch from "../Navbar/NavbarWithSearch";
 import Loading from "../UI/Loading";
 import MovieCard from "./MovieCard";
 import { API_BASE_URL, API_KEY } from "./MovieDetails";
@@ -16,34 +16,31 @@ export interface Movie {
 const MovieList: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(false);
-  // const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState<number>(0);
-
-  // useEffect(() => {
-  //   const fetchMovies = async () => {
-  //     try {
-  //       setLoading(true);
-  //       const response = await axios.get(
-  //         `${API_BASE_URL}/?s=movie&type=movie&page=1&r=25&apikey=${API_KEY}`
-  //       );
-  //       const movieData: Movie[] = response.data.Search || [];
-  //       setMovies(movieData);
-  //     } catch (error) {
-  //       console.error("Error fetching movie information", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchMovies();
-  // }, []);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const fetchMovies = async (page: number) => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `${API_BASE_URL}/?s=movie&type=movie&page=${page}&r=25&apikey=${API_KEY}`
+        `${API_BASE_URL}/?s=movie&type=movie&page=${page}&r=10&apikey=${API_KEY}`
+      );
+      const movieData: Movie[] = response.data.Search || [];
+      setMovies(movieData);
+      setTotalPages(Math.ceil(response.data.totalResults / 10));
+    } catch (error) {
+      console.error("Error fetching movie information", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchSearchMovies = async (page: number, searchTerm?: string) => {
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        `${API_BASE_URL}/?page=${page}&apikey=${API_KEY}&s=${searchTerm}`
       );
       const movieData: Movie[] = response.data.Search || [];
       setMovies(movieData);
@@ -56,59 +53,24 @@ const MovieList: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchMovies(currentPage);
-  }, [currentPage]);
-
-  // useEffect(() => {
-  //   const fetchMovies = async () => {
-  //     try {
-  //       setLoading(true);
-  //       const response = await axios.get(
-  //         // `${API_BASE_URL}/?apikey=${API_KEY}&s=${searchTerm}`
-  //         `${API_BASE_URL}/?s=&type=movie&page=1&apikey=${API_KEY}`
-  //       );
-  //       const movieData: Movie[] = response.data.Search || [];
-  //       setMovies(movieData);
-  //     } catch (error) {
-  //       console.error("Error fetching movies:", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchMovies();
-
-  //   if (searchTerm) {
-  //     const timeoutId = setTimeout(() => {
-  //       fetchMovies();
-  //     }, 500);
-
-  //     return () => clearTimeout(timeoutId);
-  //   } else {
-  //     setMovies([]);
-  //   }
-  // }, [searchTerm]);
-  // });
-
-  // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setSearchTerm(event.target.value);
-  // };
+    if (searchTerm.length > 0) {
+      fetchSearchMovies(currentPage, searchTerm);
+    } else {
+      fetchMovies(currentPage);
+    }
+  }, [currentPage, searchTerm]);
 
   return (
     <>
-      <Layout>
-        {/* <TextField
-          label="Enter 3 characters or more for searching."
-          variant="outlined"
-          fullWidth
-          onChange={handleInputChange}
-          value={searchTerm}
-          sx={{ mb: 3, mt: 3 }}
-        /> */}
-        {loading ? (
-          <Loading />
-        ) : (
-          <>
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <NavbarWithSearch
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+          />
+          <Container maxWidth="lg" style={{ marginTop: "2rem" }}>
             <Grid container spacing={4}>
               {movies.map((movie) => (
                 <Grid
@@ -117,7 +79,7 @@ const MovieList: React.FC = () => {
                   xs={12}
                   sm={5}
                   md={4}
-                  lg={2}
+                  lg={3}
                   sx={{ marginRight: 10 }}
                 >
                   <MovieCard
@@ -141,9 +103,9 @@ const MovieList: React.FC = () => {
                 justifyContent: "center",
               }}
             />
-          </>
-        )}
-      </Layout>
+          </Container>
+        </>
+      )}
     </>
   );
 };
