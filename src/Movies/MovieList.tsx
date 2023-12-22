@@ -70,7 +70,7 @@ const MovieList: React.FC = () => {
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
           />
-          <Container maxWidth="lg" style={{ marginTop: "2rem" }}>
+          <Container maxWidth="lg" style={{ marginTop: "6rem" }}>
             <Grid container spacing={4}>
               {movies.map((movie) => (
                 <Grid

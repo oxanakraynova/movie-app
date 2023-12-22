@@ -69,7 +69,7 @@ function MovieDetails() {
         details && (
           <>
             <Navbar />
-            <Container maxWidth="lg" style={{ marginTop: 2 }}>
+            <Container maxWidth="lg" style={{ marginTop: "6rem" }}>
               <Grid
                 container
                 display="flex"

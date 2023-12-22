@@ -1,13 +1,13 @@
 import { AppBar, Box, Toolbar } from "@mui/material";
 import React from "react";
-import NavHeading from "../Layout/NavHeading";
+import NavHeading from "./NavHeading";
 
-import SearchField, { Props } from "../Layout/SearchField";
+import SearchField, { Props } from "./SearchField";
 
 function NavbarWithSearch(props: Props) {
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="fixed">
         <Toolbar>
           <NavHeading />
           <SearchField
