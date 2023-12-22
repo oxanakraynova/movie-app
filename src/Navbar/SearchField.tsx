@@ -7,9 +7,9 @@ const SearchField = (props: Props) => {
   return (
     <>
       <form noValidate autoComplete="off">
-        <FormControl sx={{ width: "25ch" }}>
+        <FormControl sx={{ width: "27ch" }}>
           <TextField
-            placeholder="Search..."
+            placeholder="Search (min 3 char)"
             variant="outlined"
             size="small"
             value={props.searchTerm}
