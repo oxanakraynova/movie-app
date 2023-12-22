@@ -1,8 +1,8 @@
 import { AppBar, Box, Toolbar } from "@mui/material";
 import React from "react";
+import { Props } from "../Movies/MovieList";
 import NavHeading from "./NavHeading";
-
-import SearchField, { Props } from "./SearchField";
+import SearchField from "./SearchField";
 
 function NavbarWithSearch(props: Props) {
   return (
@@ -12,7 +12,7 @@ function NavbarWithSearch(props: Props) {
           <NavHeading />
           <SearchField
             searchTerm={props.searchTerm}
-            setSearchTerm={props.setSearchTerm}
+            onChange={props.onChange}
           />
         </Toolbar>
       </AppBar>

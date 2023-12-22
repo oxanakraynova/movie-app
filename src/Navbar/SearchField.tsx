@@ -1,70 +1,51 @@
-import { alpha, InputBase, styled } from "@mui/material";
 import React from "react";
 import SearchIcon from "@mui/icons-material/Search";
+import { FormControl, TextField, IconButton } from "@mui/material";
+import { Props } from "../Movies/MovieList";
 
-export interface Props {
-  setSearchTerm(value: string): void;
-  searchTerm: string;
-}
-
-function SearchField(props: Props) {
-  const Search = styled("div")(({ theme }) => ({
-    position: "relative",
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    "&:hover": {
-      backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    marginLeft: 0,
-    width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      marginLeft: theme.spacing(1),
-      width: "auto",
-    },
-  }));
-
-  const SearchIconWrapper = styled("div")(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: "100%",
-    position: "absolute",
-    pointerEvents: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  }));
-
-  const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: "inherit",
-    width: "100%",
-    "& .MuiInputBase-input": {
-      padding: theme.spacing(1, 1, 1, 0),
-      // vertical padding + font size from searchIcon
-      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-      transition: theme.transitions.create("width"),
-      [theme.breakpoints.up("sm")]: {
-        width: "12ch",
-        "&:focus": {
-          width: "20ch",
-        },
-      },
-    },
-  }));
-
+const SearchField = (props: Props) => {
   return (
     <>
-      <Search>
-        <SearchIconWrapper>
-          <SearchIcon />
-        </SearchIconWrapper>
-        <StyledInputBase
-          placeholder="Search..."
-          inputProps={{ "aria-label": "search" }}
-          onChange={(event) => props.setSearchTerm(event.target.value)}
-          value={props.searchTerm}
-        />
-      </Search>
+      <form noValidate autoComplete="off">
+        <FormControl sx={{ width: "25ch" }}>
+          <TextField
+            placeholder="Search..."
+            variant="outlined"
+            size="small"
+            value={props.searchTerm}
+            onChange={props.onChange}
+            sx={{
+              "& .MuiInputLabel-root, & .MuiOutlinedInput-input": {
+                color: "white",
+              },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white",
+                },
+                "&:hover fieldset": { border: "1px solid white" },
+                "&.Mui-focused fieldset": {
+                  borderColor: "white",
+                },
+              },
+              "&:hover:not($focused):not(:active) fieldset": {
+                borderColor: "white",
+              },
+            }}
+            InputProps={{
+              style: {
+                color: "white",
+              },
+              endAdornment: (
+                <IconButton size="small" sx={{ color: "white" }}>
+                  <SearchIcon />
+                </IconButton>
+              ),
+            }}
+          />
+        </FormControl>
+      </form>
     </>
   );
-}
+};
 
 export default SearchField;

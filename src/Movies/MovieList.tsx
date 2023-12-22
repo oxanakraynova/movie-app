@@ -1,16 +1,22 @@
-import { Container, Grid, Pagination } from "@mui/material";
+import { Container, Grid, Pagination, Typography } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import NavbarWithSearch from "../Navbar/NavbarWithSearch";
 import Loading from "../UI/Loading";
 import MovieCard from "./MovieCard";
 import { API_BASE_URL, API_KEY } from "./MovieDetails";
+import { debounce } from "lodash";
 
 export interface Movie {
   imdbID: string;
   Title: string;
   Poster: string;
   Year: string;
+}
+
+export interface Props {
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  searchTerm: string;
 }
 
 const MovieList: React.FC = () => {
@@ -36,7 +42,7 @@ const MovieList: React.FC = () => {
     }
   };
 
-  const fetchSearchMovies = async (page: number, searchTerm?: string) => {
+  const searchMovies = async (page: number, searchTerm: string) => {
     try {
       setLoading(true);
       const response = await axios.get(
@@ -46,19 +52,66 @@ const MovieList: React.FC = () => {
       setMovies(movieData);
       setTotalPages(Math.ceil(response.data.totalResults / 25));
     } catch (error) {
-      console.error("Error fetching movie information", error);
+      console.error("Error searching movie information", error);
     } finally {
       setLoading(false);
     }
   };
 
+  const debouncedSearchMovies = debounce(searchMovies, 1000);
+
   useEffect(() => {
     if (searchTerm.length > 0) {
-      fetchSearchMovies(currentPage, searchTerm);
+      debouncedSearchMovies(currentPage, searchTerm);
     } else {
       fetchMovies(currentPage);
     }
   }, [currentPage, searchTerm]);
+
+  const currentMoviesList = movies.map((movie) => (
+    <Grid
+      item
+      key={movie.imdbID}
+      xs={12}
+      sm={5}
+      md={4}
+      lg={3}
+      sx={{ marginRight: 10 }}
+    >
+      <MovieCard
+        imdbID={movie.imdbID}
+        Title={movie.Title}
+        Poster={movie.Poster}
+        Year={movie.Year}
+      />
+    </Grid>
+  ));
+
+  let content;
+
+  if (!loading && movies.length > 0) {
+    content = currentMoviesList;
+  } else if (!loading && searchTerm.length > 0 && movies.length === 0) {
+    content = (
+      <Grid
+        container
+        direction="column"
+        justifyContent="center"
+        alignItems="center"
+        sx={{ mt: "10rem" }}
+      >
+        <Typography
+          variant="h6"
+          gutterBottom
+        >{`No matches for "${searchTerm}"`}</Typography>
+      </Grid>
+    );
+  }
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+    setCurrentPage(1);
+  };
 
   return (
     <>
@@ -68,28 +121,11 @@ const MovieList: React.FC = () => {
         <>
           <NavbarWithSearch
             searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
+            onChange={handleSearchChange}
           />
           <Container maxWidth="lg" style={{ marginTop: "6rem" }}>
             <Grid container spacing={4}>
-              {movies.map((movie) => (
-                <Grid
-                  item
-                  key={movie.imdbID}
-                  xs={12}
-                  sm={5}
-                  md={4}
-                  lg={3}
-                  sx={{ marginRight: 10 }}
-                >
-                  <MovieCard
-                    imdbID={movie.imdbID}
-                    Title={movie.Title}
-                    Poster={movie.Poster}
-                    Year={movie.Year}
-                  />
-                </Grid>
-              ))}
+              {content}
             </Grid>
             <Pagination
               count={totalPages}
